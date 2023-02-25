@@ -1,0 +1,50 @@
+policy_module(netatalk, 1.0.0)
+
+########################################
+#
+# Declarations
+#
+
+type netatalk_t;
+type netatalk_exec_t;
+init_daemon_domain(netatalk_t, netatalk_exec_t)
+
+require {
+	type var_lock_t;
+	class file { create getattr open unlink write };
+}
+
+permissive netatalk_t;
+
+type netatalk_var_lib_t;
+files_type(netatalk_var_lib_t)
+
+########################################
+#
+# netatalk local policy
+#
+allow netatalk_t self:process { fork signal_perms };
+allow netatalk_t self:fifo_file rw_fifo_file_perms;
+allow netatalk_t self:unix_stream_socket create_stream_socket_perms;
+allow netatalk_t self:capability setuid;
+allow netatalk_t self:unix_dgram_socket { connect create };
+
+manage_dirs_pattern(netatalk_t, netatalk_var_lib_t, netatalk_var_lib_t)
+manage_files_pattern(netatalk_t, netatalk_var_lib_t, netatalk_var_lib_t)
+manage_lnk_files_pattern(netatalk_t, netatalk_var_lib_t, netatalk_var_lib_t)
+files_var_lib_filetrans(netatalk_t, netatalk_var_lib_t, { dir file lnk_file })
+
+domain_use_interactive_fds(netatalk_t)
+
+files_read_etc_files(netatalk_t)
+
+miscfiles_read_localization(netatalk_t)
+
+#allow netatalk_t devlog_t:lnk_file read;
+#allow netatalk_t devlog_t:sock_file write;
+#allow netatalk_t syslogd_var_run_t:dir search;
+#allow netatalk_t system_dbusd_t:unix_stream_socket connectto;
+#allow netatalk_t system_dbusd_var_run_t:dir search;
+#allow netatalk_t system_dbusd_var_run_t:sock_file write;
+#allow netatalk_t var_lock_t:dir { add_name remove_name write };
+allow netatalk_t var_lock_t:file { create getattr open unlink write };

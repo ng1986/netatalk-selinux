@@ -1,0 +1,5 @@
+/usr/sbin/netatalk		--	gen_context(system_u:object_r:netatalk_exec_t,s0)
+/usr/sbin/afpd			--	gen_context(system_u:object_r:netatalk_exec_t,s0)
+/usr/sbin/cnid_metad		--	gen_context(system_u:object_r:netatalk_exec_t,s0)
+
+/var/lib/netatalk(/.*)?		gen_context(system_u:object_r:netatalk_var_lib_t,s0)
